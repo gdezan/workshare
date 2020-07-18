@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/style.css" />
+    <title>Controle da Base de Dados</title>
+  </head>
+  <body>
+    <!-- Title/Subtitle -->
+    <div class="title-container">
+      <h1 class="main-title">Controle da Base de Dados</h1>
+      <h2 class="main-subtitle">
+        Sistema de Compartilhamento de Espaços de Trabalho
+      </h2>
+    </div>
+
+    <!-- Tab Selection -->
+    <div class="tabs">
+      <div class="tab selected" id="insert-user-tab">Inserir Usuário</div>
+      <div class="tab" id="search-user-tab">Pesquisar Usuário</div>
+    </div>
+
+    <!-- Insert User Tab / Pane -->
+    <div class="tab-content hidden" id="insert-user-pane">
+      <h3 class="tab-title">Inserir Usuário na Base de Dados</h3>
+      <form class="user-form" name="user-form">
+        <div class="form-line">
+          <label for="username">Nome de usuário:</label>
+          <input type="text" id="username" name="username" />
+        </div>
+        <div class="form-line">
+          <label for="email">E-Mail:</label>
+          <input type="text" id="email" name="email" />
+        </div>
+        <div class="form-line">
+          <label for="password">Senha:</label>
+          <input type="password" id="password" name="password" />
+        </div>
+        <div class="form-line">
+          <label for="full-name">Nome Completo:</label>
+          <input type="text" id="full-name" name="full-name" />
+        </div>
+        <button type="submit" class="submit-button" id="user-submit-button">
+          Confirmar
+        </button>
+      </form>
+    </div>
+
+    <!-- Search User Tab / Pane -->
+    <div class="tab-content hidden" id="search-user-pane">
+      <h3 class="tab-title">Pesquisar Usuário na Base de Dados</h3>
+      <p>Digite o e-mail ou username do usuário desejado</p>
+      <form name="search-user">
+        <div class="search-line">
+          <input name="user-search-field" id="user-search-field" type="text" />
+          <button type="submit" class="submit-button" id="user-search-button">
+            Pesquisar
+          </button>
+        </div>
+      </form>
+      <div class="card user-info-container hidden"></div>
+    </div>
+
+    <!-- Success/Error Dialog -->
+    <div class="dialog hidden" id="dialog"></div>
+
+    <!-- Script Import -->
+    <script src="src/script.js"></script>
+  </body>
+</html>

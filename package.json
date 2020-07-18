@@ -1,0 +1,12 @@
+{
+  "name": "workshare",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^9.1.0",
+    "electron-reload": "^1.5.0"
+  }
+}
