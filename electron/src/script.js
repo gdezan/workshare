@@ -9,11 +9,8 @@ const dialog = document.querySelector("#dialog");
 let displayedPane = insertUserPane;
 displayedPane.classList.remove("hidden");
 
-const fakeUser = {
-  username: "ftopper",
-  fullName: "Fulano Topper",
-  email: "ftopper_skate@gmail.com",
-};
+// const apiUrl = "https://workshare-api.herokuapp.com";
+const apiUrl = "http://127.0.0.1:5000";
 
 const tabIdToPane = {
   "insert-user-tab": insertUserPane,
@@ -44,7 +41,7 @@ const hideDialog = () => {
   dialog.classList.add("hidden");
 };
 
-const onUserSubmit = (e) => {
+const onUserSubmit = async (e) => {
   e.preventDefault();
   const form = document.forms["user-form"];
   const data = {
@@ -54,40 +51,77 @@ const onUserSubmit = (e) => {
     fullName: form["full-name"].value,
   };
 
-  console.log(data);
-  triggerDialog(
-    "Usuário inserido",
-    `O usuário ${data.username} foi inserido na base de dados com sucesso!`,
-    "assets/icons/success.svg"
-  );
+  const response = await fetch(`${apiUrl}/user`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await response.json();
+
+  if (response.status !== 201) {
+    triggerDialog(
+      "Erro na criação do usuário",
+      result.error,
+      "assets/icons/error.svg"
+    );
+    return;
+  }
+
+  triggerDialog("Usuário inserido", result.message, "assets/icons/success.svg");
+  document.forms["user-form"].reset();
 };
 
-const onUserSearch = (e) => {
+const onUserSearch = async (e) => {
   e.preventDefault();
   const user = fakeUser;
 
+  const queryString = document.forms["search-user"]["user-search-field"].value;
+
+  const response = await fetch(`${apiUrl}/user/${queryString.toLowerCase()}`, {
+    method: "GET",
+  });
+  const result = await response.json();
+
+  if (response.status !== 200) {
+    triggerDialog(
+      "Erro na busca de usuário",
+      result.error,
+      "assets/icons/error.svg"
+    );
+    return;
+  }
+
+  const locInfo = result.isLoc
+    ? `
+      <p>CPF: <b>${result.lCpf || "Não registrado"}</b></p>
+      <p>RG: <b>${result.lRg || "Não registrado"}</b></p>
+      <p>CNPJ: <b>${result.lCnpj || "Não registrado"}</b></p>
+    `
+    : "";
+
+  const propInfo = result.isProp
+    ? `
+      <p>CPF: <b>${result.pCpf || "Não registrado"}</b></p>
+      <p>RG: <b>${result.pRg || "Não registrado"}</b></p>
+    `
+    : "";
+
   userInfoContainer.innerHTML = `
     <p class="user-info-title">Dados do usuário</p>
-    <p>Nome completo: <b>${user.fullName}</b></p>
-    <p>Nome de usuário: <b>${user.username}</b></p>
-    <p>E-Mail: <b>${user.email}</b></p>
+    <p>Nome completo: <b>${result.name}</b></p>
+    <p>Nome de usuário: <b>${result.username}</b></p>
+    <p>E-Mail: <b>${result.email}</b></p>
+    <p class="user-info-subtitle">Locatário: ${result.isLoc ? "Sim" : "Não"}</p>
+    ${locInfo}
+    <p class="user-info-subtitle">Proprietário: ${
+      result.isProp ? "Sim" : "Não"
+    }</p>
+    ${propInfo}
   `;
 
   userInfoContainer.classList.remove("hidden");
-
-  // triggerDialog(
-  //   "Usuário não encontrado",
-  //   "Não foi encontrado nenhum usuário com esse e-mail ou username",
-  //   "assets/icons/error.svg"
-  // );
-
-  fetch("http://127.0.0.1:5000/user", {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      console.log("Success:", result);
-    });
 };
 
 tabs.forEach((tab) => {
